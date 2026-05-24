@@ -7,17 +7,19 @@ namespace BootTracker.Forms
     public class RecordEditDialog : Form
     {
         private TextBox txtUser, txtReason, txtApprover;
-        private DateTimePicker dtBoot;
+        private DateTimePicker dtBoot, dtShutdown;
+        private CheckBox chkShutdown;
 
         public string UserName { get; private set; }
         public string Reason { get; private set; }
         public string Approver { get; private set; }
         public string BootTime { get; private set; }
+        public string ShutdownTime { get; private set; }
 
         public RecordEditDialog()
         {
             Text = "新增开机记录";
-            Size = new Size(420, 320);
+            Size = new Size(420, 400);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -54,6 +56,21 @@ namespace BootTracker.Forms
             txtApprover = new TextBox { Location = new Point(85, y + 2), Size = new Size(300, 23) };
             Controls.Add(txtApprover);
 
+            // Shutdown time (optional)
+            y += 35;
+            chkShutdown = new CheckBox { Text = "关机时间 (选填)", Location = new Point(15, y + 3), AutoSize = true };
+            chkShutdown.CheckedChanged += (s, e) => dtShutdown.Enabled = chkShutdown.Checked;
+            Controls.Add(chkShutdown);
+            dtShutdown = new DateTimePicker
+            {
+                Location = new Point(120, y + 2),
+                Size = new Size(265, 23),
+                Format = DateTimePickerFormat.Custom,
+                CustomFormat = "yyyy-MM-dd HH:mm:ss",
+                Enabled = false,
+            };
+            Controls.Add(dtShutdown);
+
             y += 45;
             var btnOk = new Button { Text = "提交", Size = new Size(80, 30), Location = new Point(110, y) };
             btnOk.Click += (s, e) => Submit();
@@ -72,6 +89,7 @@ namespace BootTracker.Forms
             Reason = txtReason.Text.Trim();
             Approver = txtApprover.Text.Trim();
             BootTime = dtBoot.Value.ToString("yyyy-MM-dd HH:mm:ss");
+            ShutdownTime = chkShutdown.Checked ? dtShutdown.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
 
             if (string.IsNullOrEmpty(UserName))
             { MessageBox.Show("请填写使用者", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtUser.Focus(); return; }

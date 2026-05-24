@@ -43,11 +43,23 @@ namespace BootTracker.Forms
 
             grid = new DataGridView
             {
-                Dock = DockStyle.Fill,
+                Location = new Point(0, 40),
+                Size = new Size(ClientSize.Width, ClientSize.Height - 40),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                ColumnHeadersVisible = true,
+                ColumnHeadersHeight = 28,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing,
+                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Font = new Font("Microsoft YaHei", 9, FontStyle.Bold),
+                    BackColor = SystemColors.Control,
+                },
+                BackgroundColor = SystemColors.Window,
+                BorderStyle = BorderStyle.FixedSingle,
             };
             grid.Columns.Add("Day", "日期");
             grid.Columns.Add("SystemCount", "系统开机事件数");

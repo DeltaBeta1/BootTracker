@@ -20,8 +20,14 @@ namespace BootTracker
 
             if (isBootTriggered)
             {
-                // Launched by auto-start on boot: show the record dialog
-                Application.Run(new BootDialog());
+                // Show boot record dialog first
+                using (var bootDialog = new BootDialog())
+                {
+                    bootDialog.ShowDialog();
+                }
+                // Then continue as tray to capture shutdown time
+                Application.Run(new AppTrayContext());
+                DatabaseService.Instance.Dispose();
                 return;
             }
 

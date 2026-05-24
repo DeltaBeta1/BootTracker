@@ -9,6 +9,7 @@ namespace BootTracker.Models
         public string Reason { get; set; }
         public string Approver { get; set; }
         public string BootTime { get; set; }
+        public string ShutdownTime { get; set; }
         public string CreatedAt { get; set; }
     }
 }

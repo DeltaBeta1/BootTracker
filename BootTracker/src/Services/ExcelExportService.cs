@@ -21,7 +21,7 @@ namespace BootTracker.Services
             xml.AppendLine("<Worksheet ss:Name=\"Boot Records\"><Table>");
 
             xml.AppendLine("<Row>");
-            foreach (var h in new[] { "ID", "使用者", "事由", "审批人", "开机时间" })
+            foreach (var h in new[] { "ID", "使用者", "事由", "审批人", "开机时间", "关机时间" })
             {
                 xml.AppendLine("<Cell ss:StyleID=\"h\"><Data ss:Type=\"String\">" + EscapeXml(h) + "</Data></Cell>");
             }
@@ -35,6 +35,7 @@ namespace BootTracker.Services
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + EscapeXml(r.Reason) + "</Data></Cell>");
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + EscapeXml(r.Approver) + "</Data></Cell>");
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + r.BootTime + "</Data></Cell>");
+                xml.AppendLine("<Cell><Data ss:Type=\"String\">" + (string.IsNullOrEmpty(r.ShutdownTime) ? "" : r.ShutdownTime) + "</Data></Cell>");
                 xml.AppendLine("</Row>");
             }
 
@@ -97,7 +98,7 @@ namespace BootTracker.Services
             // Sheet 3: Detail Records
             xml.AppendLine("<Worksheet ss:Name=\"Detail Records\"><Table>");
             xml.AppendLine("<Row>");
-            foreach (var h in new[] { "序号", "使用人", "开机时间", "事由", "审批人" })
+            foreach (var h in new[] { "序号", "使用人", "开机时间", "关机时间", "事由", "审批人" })
                 xml.AppendLine("<Cell ss:StyleID=\"h\"><Data ss:Type=\"String\">" + h + "</Data></Cell>");
             xml.AppendLine("</Row>");
 
@@ -109,6 +110,7 @@ namespace BootTracker.Services
                 xml.AppendLine("<Cell><Data ss:Type=\"Number\">" + seq + "</Data></Cell>");
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + EscapeXml(r.UserName) + "</Data></Cell>");
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + r.BootTime + "</Data></Cell>");
+                xml.AppendLine("<Cell><Data ss:Type=\"String\">" + (string.IsNullOrEmpty(r.ShutdownTime) ? "" : r.ShutdownTime) + "</Data></Cell>");
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + EscapeXml(r.Reason) + "</Data></Cell>");
                 xml.AppendLine("<Cell><Data ss:Type=\"String\">" + EscapeXml(r.Approver) + "</Data></Cell>");
                 xml.AppendLine("</Row>");

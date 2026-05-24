@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using BootTracker.Forms;
 using BootTracker.Helpers;
 using BootTracker.Services;
+using Microsoft.Win32;
 
 namespace BootTracker
 {
@@ -37,6 +38,18 @@ namespace BootTracker
             catch { }
 
             _trayIcon.DoubleClick += (s, e) => OnSettings(s, e);
+
+            SystemEvents.SessionEnding += OnSessionEnding;
+        }
+
+        private void OnSessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            try
+            {
+                DatabaseService.Instance.UpdateLatestShutdownTime(
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+            catch { }
         }
 
         private void OnSettings(object sender, EventArgs e)

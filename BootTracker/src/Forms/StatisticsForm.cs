@@ -41,13 +41,15 @@ namespace BootTracker.Forms
             grid.Columns.Add("RowNo", "序号");
             grid.Columns.Add("UserName", "使用人");
             grid.Columns.Add("BootTime", "开机时间");
+            grid.Columns.Add("ShutdownTime", "关机时间");
             grid.Columns.Add("Reason", "事由");
             grid.Columns.Add("Approver", "审批人");
-            grid.Columns["RowNo"].FillWeight = 10;
-            grid.Columns["UserName"].FillWeight = 18;
-            grid.Columns["BootTime"].FillWeight = 26;
-            grid.Columns["Reason"].FillWeight = 28;
-            grid.Columns["Approver"].FillWeight = 18;
+            grid.Columns["RowNo"].FillWeight = 6;
+            grid.Columns["UserName"].FillWeight = 14;
+            grid.Columns["BootTime"].FillWeight = 20;
+            grid.Columns["ShutdownTime"].FillWeight = 20;
+            grid.Columns["Reason"].FillWeight = 26;
+            grid.Columns["Approver"].FillWeight = 14;
             Controls.Add(grid);
 
             // ── Filter bar (Top) — add SECOND, appears BELOW charts ──
@@ -205,7 +207,9 @@ namespace BootTracker.Forms
                     continue;
 
                 rowNo++;
-                grid.Rows.Add(rowNo, r.UserName, r.BootTime, r.Reason, r.Approver);
+                grid.Rows.Add(rowNo, r.UserName, r.BootTime,
+                    string.IsNullOrEmpty(r.ShutdownTime) ? "-" : r.ShutdownTime,
+                    r.Reason, r.Approver);
             }
         }
 

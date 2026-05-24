@@ -12,12 +12,20 @@ namespace BootTracker.Services
 
             try
             {
+                var endDate = dateTo.Date.AddDays(1);
                 using (var log = new EventLog("System"))
                 {
-                    foreach (EventLogEntry entry in log.Entries)
+                    int count = log.Entries.Count;
+                    for (int i = count - 1; i >= 0; i--)
                     {
-                        if (entry.TimeGenerated < dateFrom || entry.TimeGenerated > dateTo)
+                        EventLogEntry entry;
+                        try { entry = log.Entries[i]; }
+                        catch { continue; }
+
+                        if (entry.TimeGenerated >= endDate)
                             continue;
+                        if (entry.TimeGenerated < dateFrom.Date)
+                            break;
 
                         if (entry.InstanceId == 12)
                         {

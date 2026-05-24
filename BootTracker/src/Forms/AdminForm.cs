@@ -76,16 +76,18 @@ namespace BootTracker.Forms
                 BackgroundColor = SystemColors.Window,
                 BorderStyle = BorderStyle.FixedSingle,
             };
-            grid.Columns.Add("Id", "ID");
+            grid.Columns.Add("RowNo", "序号");
             grid.Columns.Add("UserName", "使用者");
             grid.Columns.Add("Reason", "事由");
             grid.Columns.Add("Approver", "审批人");
             grid.Columns.Add("BootTime", "开机时间");
-            grid.Columns["Id"].FillWeight = 8;
-            grid.Columns["UserName"].FillWeight = 18;
-            grid.Columns["Reason"].FillWeight = 30;
-            grid.Columns["Approver"].FillWeight = 18;
-            grid.Columns["BootTime"].FillWeight = 26;
+            grid.Columns.Add("ShutdownTime", "关机时间");
+            grid.Columns["RowNo"].FillWeight = 6;
+            grid.Columns["UserName"].FillWeight = 14;
+            grid.Columns["Reason"].FillWeight = 24;
+            grid.Columns["Approver"].FillWeight = 14;
+            grid.Columns["BootTime"].FillWeight = 21;
+            grid.Columns["ShutdownTime"].FillWeight = 21;
             Controls.Add(grid);
 
             LoadData();
@@ -108,8 +110,14 @@ namespace BootTracker.Forms
                 dtFrom.Value.ToString("yyyy-MM-dd"),
                 dtTo.Value.ToString("yyyy-MM-dd"),
                 string.IsNullOrEmpty(user) ? null : user);
+            int rowNo = 0;
             foreach (var r in records)
-                grid.Rows.Add(r.Id, r.UserName, r.Reason, r.Approver, r.BootTime);
+            {
+                rowNo++;
+                int idx = grid.Rows.Add(rowNo, r.UserName, r.Reason, r.Approver, r.BootTime,
+                    string.IsNullOrEmpty(r.ShutdownTime) ? "-" : r.ShutdownTime);
+                grid.Rows[idx].Tag = r.Id;
+            }
         }
 
         private void DeleteSelected()
@@ -119,7 +127,7 @@ namespace BootTracker.Forms
             {
                 foreach (DataGridViewRow row in grid.SelectedRows)
                 {
-                    long id = (long)row.Cells["Id"].Value;
+                    long id = (long)row.Tag;
                     DatabaseService.Instance.DeleteRecord(id);
                 }
                 LoadData();
@@ -132,7 +140,7 @@ namespace BootTracker.Forms
             {
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    DatabaseService.Instance.AddRecord(dlg.UserName, dlg.Reason, dlg.Approver, dlg.BootTime);
+                    DatabaseService.Instance.AddRecord(dlg.UserName, dlg.Reason, dlg.Approver, dlg.BootTime, dlg.ShutdownTime);
                     LoadData();
                 }
             }

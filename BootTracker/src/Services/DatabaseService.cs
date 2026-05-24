@@ -84,23 +84,29 @@ namespace BootTracker.Services
                  "reason TEXT NOT NULL," +
                  "approver TEXT NOT NULL," +
                  "boot_time TEXT NOT NULL," +
+                 "shutdown_time TEXT DEFAULT ''," +
                  "created_at TEXT DEFAULT (datetime('now','localtime')));");
             Exec("CREATE INDEX IF NOT EXISTS idx_boot_time ON records(boot_time);");
             Exec("CREATE INDEX IF NOT EXISTS idx_user ON records(user_name);");
+
+            // Migrate existing databases that lack shutdown_time column
+            try { Exec("ALTER TABLE records ADD COLUMN shutdown_time TEXT DEFAULT '';"); }
+            catch { }
         }
 
-        public void AddRecord(string userName, string reason, string approver, string bootTime = null)
+        public void AddRecord(string userName, string reason, string approver, string bootTime = null, string shutdownTime = null)
         {
             var bt = string.IsNullOrEmpty(bootTime)
                 ? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 : bootTime;
-            var sql = "INSERT INTO records (user_name, reason, approver, boot_time) VALUES (@u, @r, @a, @t)";
+            var sql = "INSERT INTO records (user_name, reason, approver, boot_time, shutdown_time) VALUES (@u, @r, @a, @t, @s)";
             using (var stmt = Prepare(sql))
             {
                 BindText(stmt, 1, userName);
                 BindText(stmt, 2, reason);
                 BindText(stmt, 3, approver);
                 BindText(stmt, 4, bt);
+                BindText(stmt, 5, shutdownTime ?? "");
                 Step(stmt);
             }
         }
@@ -114,22 +120,45 @@ namespace BootTracker.Services
             }
         }
 
-        public void UpdateRecord(long id, string userName, string reason, string approver)
+        public void UpdateRecord(long id, string userName, string reason, string approver, string shutdownTime = null)
         {
-            var sql = "UPDATE records SET user_name=@u, reason=@r, approver=@a WHERE id=@id";
+            var sql = "UPDATE records SET user_name=@u, reason=@r, approver=@a, shutdown_time=@s WHERE id=@id";
             using (var stmt = Prepare(sql))
             {
                 BindText(stmt, 1, userName);
                 BindText(stmt, 2, reason);
                 BindText(stmt, 3, approver);
-                sqlite3_bind_int64(stmt.Handle, 4, id);
+                BindText(stmt, 4, shutdownTime ?? "");
+                sqlite3_bind_int64(stmt.Handle, 5, id);
+                Step(stmt);
+            }
+        }
+
+        public void UpdateLatestShutdownTime(string shutdownTime)
+        {
+            var sql = "UPDATE records SET shutdown_time = @t WHERE id = " +
+                      "(SELECT id FROM records WHERE shutdown_time IS NULL OR shutdown_time = '' " +
+                      "ORDER BY boot_time DESC LIMIT 1)";
+            using (var stmt = Prepare(sql))
+            {
+                BindText(stmt, 1, shutdownTime);
+                Step(stmt);
+            }
+        }
+
+        public void UpdateShutdownTime(long id, string shutdownTime)
+        {
+            using (var stmt = Prepare("UPDATE records SET shutdown_time = @t WHERE id = @id"))
+            {
+                BindText(stmt, 1, shutdownTime);
+                sqlite3_bind_int64(stmt.Handle, 2, id);
                 Step(stmt);
             }
         }
 
         public List<BootRecord> GetRecords(string dateFrom, string dateTo, string userName)
         {
-            var sql = "SELECT * FROM records WHERE 1=1";
+            var sql = "SELECT id, user_name, reason, approver, boot_time, shutdown_time, created_at FROM records WHERE 1=1";
             var paramIdx = 0;
             if (!string.IsNullOrEmpty(dateFrom)) { sql += " AND date(boot_time) >= @p" + (++paramIdx); }
             if (!string.IsNullOrEmpty(dateTo)) { sql += " AND date(boot_time) <= @p" + (++paramIdx); }
@@ -153,7 +182,8 @@ namespace BootTracker.Services
                         Reason = ColumnText(stmt, 2),
                         Approver = ColumnText(stmt, 3),
                         BootTime = ColumnText(stmt, 4),
-                        CreatedAt = ColumnText(stmt, 5),
+                        ShutdownTime = ColumnText(stmt, 5),
+                        CreatedAt = ColumnText(stmt, 6),
                     });
                 }
                 return result;
