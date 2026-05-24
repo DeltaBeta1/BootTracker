@@ -1,0 +1,23 @@
+# Binary files
+*.exe
+*.dll
+*.zip
+*.rar
+
+# Build outputs
+package/
+bin/
+obj/
+*.pdb
+*.cache
+
+# IDE
+.vs/
+*.user
+*.suo
+.vscode/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ 我的个人主页 ✨</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'ZCOOL KuaiLe', 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 25%, #e8eaf6 50%, #e1f5fe 75%, #fce4ec 100%);
+    background-size: 400% 400%;
+    animation: bgShift 12s ease infinite;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  @keyframes bgShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ----- 浮动装饰 ----- */
+  .floating-decorations {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .float-item {
+    position: absolute;
+    font-size: 2rem;
+    animation: floatAround 8s ease-in-out infinite;
+    opacity: 0.6;
+  }
+  .float-item:nth-child(1) { top: 5%; left: 5%; animation-delay: 0s; }
+  .float-item:nth-child(2) { top: 10%; right: 8%; animation-delay: 1.5s; font-size: 2.5rem; }
+  .float-item:nth-child(3) { bottom: 15%; left: 10%; animation-delay: 3s; }
+  .float-item:nth-child(4) { bottom: 20%; right: 5%; animation-delay: 4.5s; font-size: 3rem; }
+  .float-item:nth-child(5) { top: 40%; left: 2%; animation-delay: 6s; }
+  .float-item:nth-child(6) { top: 50%; right: 3%; animation-delay: 2s; font-size: 2.8rem; }
+  .float-item:nth-child(7) { bottom: 40%; left: 90%; animation-delay: 5s; }
+
+  @keyframes floatAround {
+    0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+    25% { transform: translateY(-20px) rotate(5deg) scale(1.1); }
+    50% { transform: translateY(-10px) rotate(-3deg) scale(0.95); }
+    75% { transform: translateY(-25px) rotate(2deg) scale(1.05); }
+  }
+
+  /* ----- 主容器 ----- */
+  .main-container {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* ----- 头部卡片 ----- */
+  .hero-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 30px 25px 25px;
+    text-align: center;
+    margin-top: 25px;
+    box-shadow: 0 8px 32px rgba(255,138,128,0.18), 0 2px 8px rgba(0,0,0,0.06);
+    border: 3px dashed #ffb6c1;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 80px; height: 80px;
+    background: #ffeb3b;
+    border-radius: 50%;
+    opacity: 0.4;
+  }
+  .hero-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px;
+    width: 60px; height: 60px;
+    background: #ff80ab;
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+
+  .avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 5px solid #ffb6c1;
+    background: linear-gradient(135deg, #ffe0e6, #fff0f5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 16px rgba(255,105,135,0.3);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-card h1 {
+    font-size: 2rem;
+    color: #e75480;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-card .subtitle {
+    font-size: 1rem;
+    color: #ce93d8;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ----- 标签 ----- */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .tag {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(255,154,158,0.35);
+    transition: transform 0.2s;
+  }
+  .tag:hover { transform: scale(1.08) rotate(-2deg); }
+  .tag:nth-child(2) { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+  .tag:nth-child(3) { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+  .tag:nth-child(4) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+  .tag:nth-child(5) { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+  .tag:nth-child(6) { background: linear-gradient(135deg, #d4fc79, #96e6a1); }
+  .tag:nth-child(7) { background: linear-gradient(135deg, #f9d423, #ff4e50); }
+
+  /* ----- 通用卡片 ----- */
+  .card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 22px 20px;
+    margin-top: 18px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    border: 2px solid #f8bbd0;
+    transition: transform 0.25s;
+  }
+  .card:hover { transform: translateY(-3px); }
+
+  .card h2 {
+    font-size: 1.4rem;
+    color: #ab47bc;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ----- 自我介绍 ----- */
+  .intro-text {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #5c6bc0;
+  }
+  .highlight { color: #e75480; font-weight: bold; }
+
+  /* ----- 兴趣面板 ----- */
+  .interest-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .interest-item {
+    background: linear-gradient(135deg, #fff9c4, #ffccbc);
+    border-radius: 16px;
+    padding: 16px 14px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .interest-item:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .interest-item:nth-child(2) { background: linear-gradient(135deg, #e1bee7, #f8bbd0); }
+  .interest-item:nth-child(3) { background: linear-gradient(135deg, #bbdefb, #b3e5fc); }
+  .interest-item:nth-child(4) { background: linear-gradient(135deg, #c8e6c9, #dcedc8); }
+  .interest-icon { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+  .interest-label { font-size: 0.95rem; color: #6a4c93; }
+
+  /* ----- 联系方式 ----- */
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #fce4ec, #f3e5f5);
+    border-radius: 16px;
+    font-size: 1rem;
+    color: #6a4c93;
+    transition: background 0.25s;
+  }
+  .contact-item:hover { background: linear-gradient(135deg, #f8bbd0, #e1bee7); }
+  .contact-icon { font-size: 1.6rem; }
+
+  /* ----- 二维码区域 ----- */
+  .qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .qr-box {
+    width: 160px;
+    height: 160px;
+    background: #fff;
+    border-radius: 20px;
+    border: 4px dashed #ce93d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(206,147,216,0.25);
+  }
+  .qr-box::after {
+    content: '扫码加好友';
+    position: absolute;
+    bottom: -32px;
+    font-size: 0.9rem;
+    color: #ab47bc;
+  }
+  .qr-box canvas {
+    border-radius: 16px;
+  }
+  .qr-note {
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: #9e9e9e;
+    text-align: center;
+  }
+
+  /* ----- 页脚 ----- */
+  .footer {
+    text-align: center;
+    margin-top: 24px;
+    padding: 16px;
+    color: #b39ddb;
+    font-size: 0.9rem;
+  }
+
+  /* 响应式 */
+  @media (max-width: 480px) {
+    .interest-grid { grid-template-columns: 1fr; }
+    .hero-card h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 浮动装饰 -->
+<div class="floating-decorations">
+  <span class="float-item">🐱</span>
+  <span class="float-item">🌟</span>
+  <span class="float-item">🎵</span>
+  <span class="float-item">🥚</span>
+  <span class="float-item">💖</span>
+  <span class="float-item">🐾</span>
+  <span class="float-item">🎀</span>
+</div>
+
+<div class="main-container">
+
+  <!-- 头部 -->
+  <div class="hero-card">
+    <div class="avatar">🐣</div>
+    <h1>你好，我是小可爱！</h1>
+    <p class="subtitle">🌟 小学六年级 · 周深的铁粉 · 猫武士迷 · 蛋仔派对玩家 🌟</p>
+    <div class="tag-row">
+      <span class="tag">🎤 周深粉丝</span>
+      <span class="tag">🐱 猫武士</span>
+      <span class="tag">🥚 蛋仔派对</span>
+      <span class="tag">📚 爱读书</span>
+      <span class="tag">🎨 爱画画</span>
+      <span class="tag">😺 铲屎官</span>
+      <span class="tag">🌈 快乐小学生</span>
+    </div>
+  </div>
+
+  <!-- 自我介绍 -->
+  <div class="card">
+    <h2>📝 自我介绍</h2>
+    <p class="intro-text">
+      大家好呀！我是一名<span class="highlight">小学六年级</span>的学生～<br><br>
+      我是<span class="highlight">周深</span>的超级粉丝！他的每一首歌我都会唱，<br>
+      最喜欢《大鱼》和《达拉崩吧》，深深的声音像天使一样！🎤✨<br><br>
+      我还超级喜欢<span class="highlight">《猫武士》</span>！已经看完了全部六部曲，<br>
+      火星、灰条、蓝星……每一只猫的故事都让我着迷！🐱📖<br><br>
+      课余时间我最爱玩<span class="highlight">蛋仔派对</span>，<br>
+      我收集了好多可爱的皮肤，峡谷、竞速、团队合作样样行！🥚🎮<br><br>
+      希望能在这里认识更多志同道合的朋友，一起分享快乐呀～💕
+    </p>
+  </div>
+
+  <!-- 我的兴趣 -->
+  <div class="card">
+    <h2>🎯 我的兴趣</h2>
+    <div class="interest-grid">
+      <div class="interest-item">
+        <span class="interest-icon">🎤</span>
+        <span class="interest-label">听周深的歌</span>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">🐱</span>
+        <span class="interest-label">看猫武士</span>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">🥚</span>
+        <span class="interest-label">蛋仔派对</span>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">🎨</span>
+        <span class="interest-label">画小漫画</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 联系方式 -->
+  <div class="card">
+    <h2>📬 联系我</h2>
+    <div class="contact-list">
+      <div class="contact-item">
+        <span class="contact-icon">📧</span>
+        <span><strong>邮箱：</strong>xiaokeai2026@qq.com</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">💬</span>
+        <span><strong>QQ：</strong>1234567890</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">🥚</span>
+        <span><strong>蛋仔派对ID：</strong>小可爱爱吃糖</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">🎵</span>
+        <span><strong>网易云音乐：</strong>深深的小迷妹</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 二维码区域 -->
+  <div class="card">
+    <h2>📱 二维码</h2>
+    <div class="qr-section">
+      <div class="qr-box" id="qrBox">
+        <canvas id="qrCanvas" width="140" height="140"></canvas>
+      </div>
+      <p class="qr-note">扫一扫二维码，加我好友一起玩吧～🥚🐱🎤</p>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <div class="footer">
+    💕 谢谢你来我的主页玩！记得保持开心每一天哦～ 💕
+  </div>
+
+</div>
+
+<!-- QR码生成脚本 -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+  // 使用 QRCode.js 生成二维码
+  var qrCanvas = document.getElementById('qrCanvas');
+  // 先用文字占位，实际使用时替换为真实链接或联系方式
+  var qrData = 'https://example.com/my-profile?user=xiaokeai';
+  new QRCode(qrCanvas, {
+    text: qrData,
+    width: 140,
+    height: 140,
+    colorDark: '#ab47bc',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  // 去掉库自带的 title
+  qrCanvas.removeAttribute('title');
+</script>
+
+</body>
+</html>
